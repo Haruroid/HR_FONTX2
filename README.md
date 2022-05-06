@@ -1,53 +1,36 @@
-# HR_FONTX2 : Universal FONTX2 Library written in C++
-このライブラリは複数の環境やLCDで動かすことを想定して作られています。しかし今の所STM32でしか動かしたことがないので現状サポート環境はSTM32のみです(笑)
+# HR_FONTX2 : Universal FONTX2 Library written in C
+このライブラリは複数の環境やLCDで動かすことを想定して作られていますが，今のところSTM32でしか動かしたことがないです(笑)
 
 ## 要求環境
-- C++
-- **Chan氏のFatFs**
-- void型で(uint16_t x,uint16_t y,uint16_t color)を引数に持つドット描画関数
+- C
+- ドット描画を行う事ができる関数
+- 全角・半角のフォントを読み出す事ができる関数
 
 ドット描画に関数ポインタを使用しているので様々な液晶で動かせると思います。
+ドット描画を行えない表示器の場合は，バッファを操作する関数を作成する事で代用できます．
 
-またC++の練習で作ったので荒いコーディングは無視して下さい....
-
-Chan氏のFatFsに結構依存してるのでArduinoとかで使う場合は少し工夫が必要です。
-多分Arduinoにはもっといいライブラリがあるでしょうが...
+フォントは少なくともどちらかがあれば動く為，メモリの少ないマイコンでは英字のみを使用する等が可能です．
 
 ## 使用例:
-![イメージ](https://haruroid.0t0.jp/blog/wp-content/uploads/2019/05/20190517_225250.jpg)
+![fontx](https://user-images.githubusercontent.com/13781980/167168742-cd2ca2d4-8a0f-4e64-83e1-102ddb347a4c.jpg)
+STM32F3-Discoveryでの動作イメージです．
 
+※左半分が割れているので表示が変になっています．
+
+使用例は
+https://github.com/Haruroid/STM32-ILI9488-GPIO
+へUPしました．
+
+```c
+	void (*writedot)(uint16_t x, uint16_t y, uint16_t color) = lcdwrite;
+	void (*_readHFont)(uint32_t offset,uint32_t size,uint8_t* out) = readH;
+	void (*_readZFont)(uint32_t offset,uint32_t size,uint8_t* out) = readZ;
+
+	if(!HR_FONTX2_init(_readHFont,_readZFont,writedot))
+		while(1);
+	HR_FONTX2_writeString("日本語テスト卍English", 200, 0, 0xffff);
 ```
-	st = new ST7789(s, d, r);
-	st->init();
-
-	FIL zfont, hfont;
-	void (*writedot)(uint16_t x, uint16_t y, uint16_t color) = writed;
-
-	uint32_t rn;
-
-	st->fillRect(0, 240, 0, 240, RGB565(0x00, 0x00, 0x00));
-
-	if (f_open(&zfont, "/ILGZ24XB.FNT", FA_OPEN_EXISTING | FA_READ)
-			!= FR_OK) {
-		st->fillRect(0, 240, 0, 240, RGB565(0xFF, 0x00, 0xFF));
-		while (1)
-			;
-	}
-	if (f_open(&hfont, "/ILGH24XB.FNT", FA_OPEN_EXISTING | FA_READ) != FR_OK) {
-		st->fillRect(0, 240, 0, 240, RGB565(0xFF, 0x00, 0xFF));
-		while (1)
-			;
-	}
-
-	HR_FONTX2 fnx = HR_FONTX2(&zfont,&hfont, writedot);
-	if (!fnx.init()) {
-		st->fillRect(0, 240, 0, 240, RGB565(0xFF, 0x00, 0xFF));
-		while (1)
-			;
-	}
-
-	fnx.writeString("abcあいう漢卍",0,0,0xFFFF);
-```
-※writedは液晶のドット描画する関数(のラッパ)です。クラスへの関数ポインタがいまいちわからないのでこういう事になってます...
+半角・全角のフォント読み込み関数，描画関数を指定してwriteStringで描画を行います．
+SJISなので注意して下さい．
 
 バグがあるかもしれません。報告歓迎です
