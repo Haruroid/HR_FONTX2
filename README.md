@@ -11,13 +11,16 @@
 
 フォントは少なくともどちらかがあれば動く為，メモリの少ないマイコンでは英字のみを使用する等が可能です．
 
-## 使用例:
-![fontx](https://user-images.githubusercontent.com/13781980/167168742-cd2ca2d4-8a0f-4e64-83e1-102ddb347a4c.jpg)
-STM32F3-Discoveryでの動作イメージです．
+## 使用例
+![oled](https://user-images.githubusercontent.com/13781980/167238118-de0f574b-ad0f-448c-a0b9-42d05f32bdf1.jpg)
+STM32F401CCU6とSSD1306での動作イメージ
+
+![lcd](https://user-images.githubusercontent.com/13781980/167238163-648adac6-cf12-4e46-b360-a61b0e45b07d.jpg)
+STM32F3-DiscoveryとILI9488での動作イメージ
 
 ※左半分が割れているので表示が変になっています．
 
-使用例は
+ソースコードは
 https://github.com/Haruroid/STM32-ILI9488-GPIO
 へUPしました．
 
