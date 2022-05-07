@@ -1,5 +1,5 @@
 # HR_FONTX2 : Universal FONTX2 Library written in C
-このライブラリは複数の環境やLCDで動かすことを想定して作られていますが，今のところSTM32でしか動かしたことがないです(笑)
+複数の環境やLCDで動作させることを想定し，関数ポインタを用いてフォント読み込みや描画を行うことでポータビリティを向上させています．
 
 ## 要求環境
 - C
@@ -20,9 +20,15 @@ STM32F3-DiscoveryとILI9488での動作イメージ
 
 ※左半分が割れているので表示が変になっています．
 
-ソースコードは
+ソースコード:
 https://github.com/Haruroid/STM32-ILI9488-GPIO
-へUPしました．
+
+![gbdk](https://user-images.githubusercontent.com/13781980/167248508-308141bc-cbfe-4b6a-beb1-afc71f297d8e.png)
+GBDKを使用したゲームボーイでの動作イメージ
+
+ソースコード:
+https://github.com/Haruroid/GB-FONTX2-Sample
+
 
 ```c
 void lcdwrite(uint16_t x, uint16_t y, uint16_t col) {
@@ -38,11 +44,7 @@ void readH(uint32_t off,uint32_t size,uint8_t* buf){
 }
 
 void app(){
-	void (*writedot)(uint16_t x, uint16_t y, uint16_t color) = lcdwrite;
-	void (*_readHFont)(uint32_t offset,uint32_t size,uint8_t* out) = readH;
-	void (*_readZFont)(uint32_t offset,uint32_t size,uint8_t* out) = readZ;
-
-	if(!HR_FONTX2_init(_readHFont,_readZFont,writedot))
+	if(!HR_FONTX2_init(readH,readZ,lcdwrite))
 		while(1);
 	HR_FONTX2_writeString("日本語テスト卍English", 200, 0, 0xffff);
 }
