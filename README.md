@@ -25,6 +25,19 @@ https://github.com/Haruroid/STM32-ILI9488-GPIO
 へUPしました．
 
 ```c
+void lcdwrite(uint16_t x, uint16_t y, uint16_t col) {
+	ILI9488_drawRect(x, y, 1, 1, col);
+}
+
+void readZ(uint32_t off,uint32_t size,uint8_t* buf){
+	memcpy(buf,ZenFont+off,size);
+}
+
+void readH(uint32_t off,uint32_t size,uint8_t* buf){
+	memcpy(buf,HanFont+off,size);
+}
+
+void app(){
 	void (*writedot)(uint16_t x, uint16_t y, uint16_t color) = lcdwrite;
 	void (*_readHFont)(uint32_t offset,uint32_t size,uint8_t* out) = readH;
 	void (*_readZFont)(uint32_t offset,uint32_t size,uint8_t* out) = readZ;
@@ -32,8 +45,9 @@ https://github.com/Haruroid/STM32-ILI9488-GPIO
 	if(!HR_FONTX2_init(_readHFont,_readZFont,writedot))
 		while(1);
 	HR_FONTX2_writeString("日本語テスト卍English", 200, 0, 0xffff);
+}
 ```
 半角・全角のフォント読み込み関数，描画関数を指定してwriteStringで描画を行います．
 SJISなので注意して下さい．
 
-バグがあるかもしれません。報告歓迎です
+バグがあるかもしれません．報告歓迎です
